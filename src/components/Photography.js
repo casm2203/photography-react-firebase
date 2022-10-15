@@ -276,6 +276,9 @@ const Photography = () => {
                 <option className="text-capitalize" value="nature">
                   nature
                 </option>
+                <option className="text-capitalize" value="nature">
+                  other
+                </option>
               </select>
             </div>
             <div className="mb-3">
