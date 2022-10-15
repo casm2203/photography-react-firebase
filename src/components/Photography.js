@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import Modal from "./Modal";
 import { customAlphabet } from "nanoid";
+
 const nanoid = customAlphabet("123456789", 1);
 
 const formPhoto = {
