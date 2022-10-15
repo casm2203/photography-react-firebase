@@ -23,7 +23,7 @@ const formPhoto = {
   origyn_country: "",
 };
 
-const Artwork = () => {
+const Photography = () => {
   const [form, setForm] = useState(formPhoto);
   const [dbs, setDbs] = useState([]);
   const [edit, setEdit] = useState(false);
@@ -33,7 +33,7 @@ const Artwork = () => {
     //Obtener datos
     const getData = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, "artwork"));
+        const querySnapshot = await getDocs(collection(db, "photo"));
         const array = querySnapshot.docs.map((item) => ({
           ...item.data(),
           id: item.id,
@@ -50,10 +50,10 @@ const Artwork = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (
-      !form.name_art ||
-      !form.artist ||
+      !form.name_photo ||
+      !form.photographer ||
       !form.details ||
-      !form.museum ||
+      !form.site ||
       !form.origyn_country
     ) {
       alert("Datos incompletos, Por favor validar la información ingresada");
@@ -61,7 +61,7 @@ const Artwork = () => {
     }
     if (edit) {
       try {
-        const updateArt = doc(db, "artwork", form.id);
+        const updateArt = doc(db, "photo", form.id);
         await updateDoc(updateArt, form);
         let newData = dbs.map((el) => (el.id === form.id ? form : el));
         setDbs(newData);
@@ -72,7 +72,7 @@ const Artwork = () => {
     } else {
       try {
         let created = new Date().toISOString().split("T")[0];
-        const docRef = await addDoc(collection(db, "artwork"), {
+        const docRef = await addDoc(collection(db, "photo"), {
           ...form,
           id: nanoid(),
           created_at: created,
@@ -90,7 +90,7 @@ const Artwork = () => {
   //Eliminar dato
   const deleteData = async (id) => {
     try {
-      await deleteDoc(doc(db, "artwork", id));
+      await deleteDoc(doc(db, "photo", id));
       let newData = dbs.filter((el) => (el.id === id ? null : el));
       setDbs(newData);
     } catch (e) {
@@ -138,9 +138,9 @@ const Artwork = () => {
               {dbs.map(
                 ({
                   id,
-                  name_art,
-                  artist,
-                  museum,
+                  name_photo,
+                  photographer,
+                  site,
                   category,
                   created_at,
                   details,
@@ -155,11 +155,10 @@ const Artwork = () => {
                           alt="..."
                         />
                         <h6 className="card-title text-capitalize">
-                          {" "}
-                          {name_art}
+                          <strong>Nombre de la fotografia:</strong> {name_photo}
                         </h6>
                         <p className="card-text txt-sz text-capitalize">
-                          <strong>Artista:</strong> {artist}
+                          <strong>Fotografo:</strong> {photographer}
                         </p>
                         <p className="card-text txt-sz">
                           <strong>Detalle:</strong> {details}
@@ -168,10 +167,10 @@ const Artwork = () => {
                           <strong>Categoria:</strong> {category}
                         </p>
                         <p className="card-text txt-sz">
-                          <strong>Museo:</strong> {museum}
+                          <strong>Sitio de la fotografia:</strong> {site}
                         </p>
                         <p className="card-text txt-sz">
-                          <strong>Fecha del arte:</strong> {created_at}
+                          <strong>Fecha de la fotografia:</strong> {created_at}
                         </p>
                         <p className="card-text txt-sz">
                           <strong>Pais de origen:</strong> {origyn_country}
@@ -185,9 +184,9 @@ const Artwork = () => {
                             onClick={() =>
                               formUpdate({
                                 id,
-                                name_art,
-                                artist,
-                                museum,
+                                name_photo,
+                                photographer,
+                                site,
                                 category,
                                 created_at,
                                 details,
@@ -217,28 +216,28 @@ const Artwork = () => {
         </div>
         <div className="col shadow-sm p-3 mb-5 bg-body rounded">
           {/* Formulario */}
-          <h3>{edit ? "Editar Obra de arte" : "Agregar Obra de arte"}</h3>
+          <h3>{edit ? "Editar Fotografia" : "Agregar Fotografia"}</h3>
           <hr />
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
-              <label className="form-label">Nombre de la obra de arte:</label>
+              <label className="form-label">Nombre de la fotografia:</label>
               <input
                 type="text"
-                placeholder="Nombre de la obra de arte"
+                placeholder="Nombre de la fotografia"
                 onChange={handleChange}
-                value={form.name_art}
-                name="name_art"
+                value={form.name_photo}
+                name="name_photo"
                 className="form-control"
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">Nombre del artista:</label>
+              <label className="form-label">Nombre del fotografo:</label>
               <input
                 type="text"
-                placeholder="Nombre del artista"
+                placeholder="Nombre del fotografo"
                 onChange={handleChange}
-                value={form.artist}
-                name="artist"
+                value={form.photographer}
+                name="photographer"
                 className="form-control"
               />
             </div>
@@ -281,13 +280,13 @@ const Artwork = () => {
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">Museo:</label>
+              <label className="form-label">Sitio de la fotografia:</label>
               <input
                 type="text"
-                placeholder="Museo"
+                placeholder="Sitio de la fotografia"
                 onChange={handleChange}
-                value={form.museum}
-                name="museum"
+                value={form.site}
+                name="site"
                 className="form-control"
               />
             </div>
@@ -312,7 +311,7 @@ const Artwork = () => {
                 </button>
               </div>
             ) : (
-              <button className="btn btn-success" type="submit">
+              <button className="btn btn-secondary" type="submit">
                 Enviar
               </button>
             )}
@@ -323,4 +322,4 @@ const Artwork = () => {
   );
 };
 
-export default Artwork;
+export default Photography;
