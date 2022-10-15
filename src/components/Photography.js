@@ -9,8 +9,9 @@ import {
   updateDoc,
   deleteDoc,
 } from "firebase/firestore";
-import { nanoid } from "nanoid";
 import Modal from "./Modal";
+import { customAlphabet } from "nanoid";
+const nanoid = customAlphabet("123456789", 1);
 
 const formPhoto = {
   id: null,
@@ -21,6 +22,7 @@ const formPhoto = {
   created_at: "",
   details: "",
   origyn_country: "",
+  img: "",
 };
 
 const Photography = () => {
@@ -28,7 +30,6 @@ const Photography = () => {
   const [dbs, setDbs] = useState([]);
   const [edit, setEdit] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-
   useEffect(() => {
     //Obtener datos
     const getData = async () => {
@@ -72,12 +73,17 @@ const Photography = () => {
     } else {
       try {
         let created = new Date().toISOString().split("T")[0];
+        let imdID = nanoid();
         const docRef = await addDoc(collection(db, "photo"), {
           ...form,
           id: nanoid(),
           created_at: created,
+          img: imdID,
         });
-        setDbs([...dbs, { ...form, created_at: created, id: docRef.id }]);
+        setDbs([
+          ...dbs,
+          { ...form, created_at: created, img: imdID, id: docRef.id },
+        ]);
         openM();
       } catch (error) {
         console.log(error);
@@ -107,7 +113,6 @@ const Photography = () => {
 
   //Obtener valores del formulario
   const handleChange = (e) => {
-    console.log(e);
     setForm({
       ...form,
       [e.target.name]: e.target.value,
@@ -145,15 +150,18 @@ const Photography = () => {
                   created_at,
                   details,
                   origyn_country,
+                  img,
                 }) => (
-                  <div className="col-4 mb-1" key={id}>
-                    <div className="card w-100">
-                      <div className="card-body">
+                  <div className="card mb-3 w-50" key={id}>
+                    <div className="row g-0  p-2">
+                      <div className="col-md-4">
                         <img
-                          src={`https://placeimg.com/200/200/${category}`}
-                          className="card-img-top"
+                          src={`https://picsum.photos/id/102${img}/200/300`}
+                          className="card-img-top mr-5"
                           alt="..."
                         />
+                      </div>
+                      <div className="col-md-8 text-center">
                         <h6 className="card-title text-capitalize">
                           <strong>Nombre de la fotografia:</strong> {name_photo}
                         </h6>
@@ -191,6 +199,7 @@ const Photography = () => {
                                 created_at,
                                 details,
                                 origyn_country,
+                                img
                               })
                             }
                             type="button"
@@ -305,7 +314,7 @@ const Photography = () => {
               <div>
                 <button className="btn btn-warning" type="submit">
                   Editar
-                </button>{" "}
+                </button>
                 <button onClick={handleReset} className="btn btn-dark">
                   Cancelar
                 </button>
